@@ -15,12 +15,12 @@ def test_plot_stock():
     """
     Makes sure we can just plot a stock
     """
-    ticker = 'GOOG'
-    main_df = pd.read_pickle('df_without_zeros.pkl')
+    ticker = 'EA'
+    main_df = pd.read_pickle('stock_data/df_without_zeros.pkl')
     main_df = sample_slopes.create_slope_sum(main_df)
 
     Back_Test = back_test.BackTest(
-        main_df, '/Users/jasonbamford/workspace/stock_surface/model_18_batch.pkl')
+        main_df, '/Users/jasonbamford/workspace/stock_surface/models/model_18_batch.pkl')
 
     y_values = sample_slopes.generate_target_values(
         main_df, 18, ticker + 'CLS', 2)
@@ -37,15 +37,15 @@ def test_plot_stock():
     algorithm_return = Back_Test.take_bid_stream_calculate_profit(
         ticker + "bid_stream", 18, 2)
 
-    runningTotal = []
+    array_of_bid_stream = Back_Test.main_df[ticker + 'bid_stream'].tolist()
+    index_bid_stream = range(0, len(array_of_bid_stream))
 
+    runningTotal = []
     total = 0
-    print algorithm_return, 'algo return'
     for n in algorithm_return:
         total += n
         runningTotal.append(total)
 
-    print runningTotal, 'cum sum'
     # list_of_bids = Back_Test.array_of_profits
     index = range(0, len(runningTotal))
 
@@ -54,6 +54,8 @@ def test_plot_stock():
     plt.plot(index_stock, main_df[ticker + 'CLS'].tolist(), 'r')
 
     plt.plot(index, runningTotal, 'g')
+
+    plt.plot(index_bid_stream, array_of_bid_stream, 'b')
 
     plt.show()
 

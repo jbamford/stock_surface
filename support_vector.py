@@ -15,6 +15,7 @@ from sklearn.datasets import load_digits
 import pandas
 from sklearn.model_selection import TimeSeriesSplit
 from sklearn.externals import joblib
+from datetime import datetime
 
 
 class Support_Vector():
@@ -67,7 +68,8 @@ class Support_Vector():
         # clf = SVC()
         # clf.fit(self.X_train, self.y_train)
         self.model = pickle.dumps(svclassifier)
-        joblib.dump(svclassifier, 'model.pkl')
+        joblib.dump(svclassifier, 'models/model' +
+                    str(datetime.now()) + '.pkl')
 
         return confustion_matrix[0]  # , confustion_matrix[1]
 

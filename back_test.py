@@ -223,6 +223,9 @@ class BackTest():
                 bid = int(bid)
             except:
                 print "failsed here"
+                if holding == 1:
+                    self.array_of_profits.append(
+                        array_of_closes[index] - buy_price)
                 return self.array_of_profits
 
             if bid == 1 and holding == 0:
@@ -244,6 +247,11 @@ class BackTest():
                         index + batch_size + look_ahead]
                 except:
                     print "failsed heres"
+
+                    if holding == 1:
+                        self.array_of_profits.append(
+                            array_of_closes[index] - buy_price)
+
                     return self.array_of_profits
                 # now its time to sell out and calc return
 
@@ -265,6 +273,10 @@ class BackTest():
 
             if bid == None:
                 print "the bid was  none"
+
+                if holding == 1:
+                    self.array_of_profits.append(
+                        array_of_closes[index] - buy_price)
                 return self.array_of_profits
 
             print "bid: {} - buy_price: {} - sell_price: {} - holding: {}".format(str(bid), str(buy_price), str(sell_price), str(holding))

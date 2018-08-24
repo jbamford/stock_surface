@@ -17,6 +17,7 @@ import support_vector as support_vector
 # import plotly.offline as py
 import ploty_web as plot_web
 
+
 plot_bool = 0
 
 tickers = ["AAPL", "MSFT", "GOOG", "FB", "INTC", 'TSM',
@@ -26,7 +27,7 @@ tickers = ["AAPL", "MSFT", "GOOG", "FB", "INTC", 'TSM',
            "CTSH", "EA", "EA", "NXPI", "INFY", "HPQ", "ADI", "NOK"]
 
 
-start = dt.datetime(2015, 10, 1)
+start = dt.datetime(2016, 10, 1)
 end = dt.datetime(2018, 4, 14)
 mpl.rcParams['legend.fontsize'] = 10
 
@@ -93,23 +94,25 @@ def main(batch_size, look_ahead):
     ticker_data = Ticker_Data(main_df)
 
     # NOTE ============start here to get new stock data=======================
-    # for ticker in tickers:
-    #     time.sleep(.02)
-    #     # print ticker
-    #     df = web.DataReader(ticker, 'morningstar', start, end)
-    #     df = df.reset_index(level='Symbol')
-    #     # print df.head()
-    #     ticker_data.append_change_column(df, i, ticker)
+    for ticker in tickers:
+        print ticker
+        time.sleep(.02)
+        # print ticker
+        df = web.DataReader(ticker, 'morningstar', start, end)
+        df = df.reset_index(level='Symbol')
+        # print df.head()
+        ticker_data.append_change_column(df, i, ticker)
 
-    #     i = i + 50
+        i = i + 50
 
-    # # remove the rows that contain any 0's
-    # ticker_data.drop_row_with_zeros()
+    # remove the rows that contain any 0's
+    ticker_data.drop_row_with_zeros()
 
-    # ticker_data.main_df.to_pickle('df_without_zeros.pkl')
+    ticker_data.main_df.to_pickle('stock_data/df_without_zeros2010-2018.pkl')
     # NOTE ============end================================================
 
-    ticker_data.main_df = pd.read_pickle('df_without_zeros.pkl')
+    ticker_data.main_df = pd.read_pickle(
+        'stock_data/df_without_zeros2010-2018.pkl')
     # add the slope sum values to the dataframe
     ticker_data.main_df = sample_slopes.create_slope_sum(ticker_data.main_df)
 
