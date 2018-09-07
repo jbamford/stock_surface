@@ -24,10 +24,10 @@ tickers = ["AAPL", "MSFT", "GOOG", "FB", "INTC", 'TSM',
            "CSCO", "ORCL", "NVDA", "SAP", "IBM", "ADBE",
            "TXN", "AVGO", "CRM", "QCOM", "MU", "BIDU",
            "ADP", "VMW", "ATVI", "AMAT", "INTU",
-           "CTSH", "EA", "EA", "NXPI", "INFY", "HPQ", "ADI", "NOK"]
+           "CTSH", "EA", "NXPI", "INFY", "HPQ", "ADI", "NOK"]
 
 
-start = dt.datetime(2016, 10, 1)
+start = dt.datetime(2012, 10, 1)
 end = dt.datetime(2018, 4, 14)
 mpl.rcParams['legend.fontsize'] = 10
 
@@ -55,12 +55,12 @@ class Ticker_Data():
     def append_change_column(self, df, offset, ticker):
 
         # df2['change'] = df['Close'].pct_change(1, "pad", None, delta)
-        df2['change'] = np.log(df['Close']) - np.log(df['Close'].shift(1))
+        df2['change'] = np.log(df['close']) - np.log(df['close'].shift(1))
         plot_df[str(ticker)] = df2['change']
 
         self.main_df[str(ticker) + 'CHG'] = df2['change']
 
-        self.main_df[str(ticker) + 'CLS'] = df['Close']
+        self.main_df[str(ticker) + 'CLS'] = df['close']
 
         print self.main_df
 
@@ -81,6 +81,13 @@ class Ticker_Data():
         columns = list(self.main_df)
 
         self.main_df = self.main_df[self.main_df[columns] != 0]
+
+    def drop_row_with_NA(self):
+        """
+        removes the rows with NA on teh self.dataframe
+        """
+
+        # self.main_df = self.main_df[self.main_df[columns] != 0]
         self.main_df = self.main_df.dropna()
 
 
@@ -98,15 +105,17 @@ def main(batch_size, look_ahead):
         print ticker
         time.sleep(.02)
         # print ticker
-        df = web.DataReader(ticker, 'morningstar', start, end)
-        df = df.reset_index(level='Symbol')
+        df = web.DataReader(ticker, 'iex', start, end)
+        df = df.reset_index(level='date')
         # print df.head()
         ticker_data.append_change_column(df, i, ticker)
 
         i = i + 50
 
-    # remove the rows that contain any 0's
-    ticker_data.drop_row_with_zeros()
+    # remove the rows that contain any 0's or NA
+
+    # ticker_data.drop_row_with_zeros()
+    ticker_data.drop_row_with_NA()
 
     ticker_data.main_df.to_pickle('stock_data/df_without_zeros2010-2018.pkl')
     # NOTE ============end================================================
@@ -117,7 +126,7 @@ def main(batch_size, look_ahead):
     ticker_data.main_df = sample_slopes.create_slope_sum(ticker_data.main_df)
 
     # write the whole datarame to a csv if you want to
-    ticker_data.main_df.to_csv('stock_data_slope_sum.csv')
+    ticker_data.main_df.to_csv('stock_data_slope_sumNoNA.csv')
 
     # get the names of all the column titles
     columns = list(ticker_data.main_df)

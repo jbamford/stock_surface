@@ -15,12 +15,12 @@ def test_plot_stock():
     """
     Makes sure we can just plot a stock
     """
-    ticker = 'EA'
-    main_df = pd.read_pickle('stock_data/df_without_zeros.pkl')
+    ticker = 'INTU'
+    main_df = pd.read_pickle('stock_data/df_without_zeros2010-2018.pkl')
     main_df = sample_slopes.create_slope_sum(main_df)
 
     Back_Test = back_test.BackTest(
-        main_df, '/Users/jasonbamford/workspace/stock_surface/models/model_18_batch.pkl')
+        main_df, "/Users/jasonbamford/workspace/stock_surface/models/model2018-09-03 14:27:40.165088.pkl")
 
     y_values = sample_slopes.generate_target_values(
         main_df, 18, ticker + 'CLS', 2)
@@ -35,10 +35,12 @@ def test_plot_stock():
                                        ticker + "slope_sum")
 
     algorithm_return = Back_Test.take_bid_stream_calculate_profit(
-        ticker + "bid_stream", 18, 2)
+        ticker + "bid_stream", 18, 2, for_graph=True)
 
     array_of_bid_stream = Back_Test.main_df[ticker + 'bid_stream'].tolist()
     index_bid_stream = range(0, len(array_of_bid_stream))
+
+    array_of_bid_stream = np.array(array_of_bid_stream) * 5
 
     runningTotal = []
     total = 0
@@ -61,3 +63,6 @@ def test_plot_stock():
 
     # TODO make sure that the running total account for weather or not we have a hold
     # at the end of the time sequance the stock should track if we have a hold
+
+if __name__ == '__main__':
+    test_plot_stock()

@@ -89,6 +89,12 @@ class BackTest():
         """
         return np.log(float(finial) / float(initial))
 
+    def percent_change(self, finial, initial):
+        """
+        Takes two number and caculates there log return
+        """
+        return (float(finial) - float(initial) / float(initial))
+
     def test_calculate_holding_log_return(self, column_with_close):
         """
         This function takes a column with a close and caculates its return if someone just held the stock
@@ -173,7 +179,7 @@ class BackTest():
                     return self.array_of_returns
                 # now its time to sell out and calc return
                 self.array_of_returns.append(
-                    self.log_return(sell_price, buy_price))
+                    self.percent_change(sell_price, buy_price))
 
                 holding = 0
 
@@ -200,7 +206,7 @@ class BackTest():
 
         return self.array_of_returns
 
-    def take_bid_stream_calculate_profit(self, column_bid_stream, batch_size, look_ahead):
+    def take_bid_stream_calculate_profit(self, column_bid_stream, batch_size, look_ahead, for_graph=False):
         """
         This function take a column with a bid stream then reads the bid stream
         then looks at the corospoiding close prices and caculates our return
@@ -216,13 +222,15 @@ class BackTest():
         sell_price = 0
         holding = 0
 
-        self.array_of_profits = [array_of_closes[0]]
+        self.array_of_profits = []
+        if for_graph == True:
+            self.array_of_profits.append(array_of_closes[0])
 
         for bid in array_of_bid_stream:
             try:
                 bid = int(bid)
             except:
-                print "failsed here"
+                print "failsed heress"
                 if holding == 1:
                     self.array_of_profits.append(
                         array_of_closes[index] - buy_price)
@@ -246,7 +254,7 @@ class BackTest():
                     sell_price = array_of_closes[
                         index + batch_size + look_ahead]
                 except:
-                    print "failsed heres"
+                    print "failsed herzzes"
 
                     if holding == 1:
                         self.array_of_profits.append(

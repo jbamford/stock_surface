@@ -298,6 +298,7 @@ def test_on_market_data_single_stock_profit():
 
     """
 
+    ticker = 'FB'
     main_df = pd.read_pickle('stock_data/df_without_zeros.pkl')
     main_df = sample_slopes.create_slope_sum(main_df)
 
@@ -305,41 +306,40 @@ def test_on_market_data_single_stock_profit():
         main_df, '/Users/jasonbamford/workspace/stock_surface/models/model_18_batch.pkl')
 
     y_values = sample_slopes.generate_target_values(
-        main_df, 18, 'FBCLS', 2)
+        main_df, 18, ticker + "CLS", 2)
 
     x_values = sample_slopes.create_batch_of_slopes(
-        main_df, 'FBCLS', 18,   y_values[1])
+        main_df, ticker + 'CLS', 18,   y_values[1])
 
     array_of_batches = Back_Test.create_batch_of_slopes(
-        main_df, 'FBslope_sum', 18, y_values[1])
+        main_df, ticker + 'slope_sum', 18, y_values[1])
 
     print array_of_batches, ' here is lensss'
 
     print Back_Test.append_list_of_buy_sells(array_of_batches,
-                                             "FBslope_sum")
+                                             ticker + "slope_sum")
 
-    print "algorithm ", sum(Back_Test.take_bid_stream_calculate_profit("FBbid_stream", 18, 2)),
-    print "percent change", Back_Test.calculate_holding_profit("FBCLS"),
+    print "algorithm ", sum(Back_Test.take_bid_stream_calculate_profit(ticker + "bid_stream", 18, 2)),
+    print "percent change", Back_Test.calculate_holding_profit(ticker + "CLS"),
 
 
 def test_on_array_of_tickers_profit():
     """
     This test is used to try out the returns calculator on the stock market data
-
     """
     tickers = ["GOOG", "FB", "INTC", 'TSM',
                "CSCO", "ORCL", "NVDA", "SAP", "IBM", "ADBE",
                "TXN", "AVGO", "CRM", "QCOM", "MU", "BIDU",
                "ADP", "VMW", "ATVI", "AMAT", "INTU",
-               "CTSH", "EA", "EA", "NXPI", "INFY"]
+               "CTSH", "EA", "NXPI", "INFY"]
 
     # tickers = ["GOOG", "FB", "INTC", 'TSM', "CSCO"]
 
-    main_df = pd.read_pickle('stock_data/df_without_zeros.pkl')
+    main_df = pd.read_pickle('stock_data/df_without_zeros2010-2018.pkl')
     main_df = sample_slopes.create_slope_sum(main_df)
 
     Back_Test = back_test.BackTest(
-        main_df, '/Users/jasonbamford/workspace/stock_surface/models/model_18_batch.pkl')
+        main_df, "/Users/jasonbamford/workspace/stock_surface/models/model2018-09-03 14:27:40.165088.pkl")
 
     with open('return_output.csv', 'w') as f:
         for ticker in tickers:
@@ -356,16 +356,18 @@ def test_on_array_of_tickers_profit():
             Back_Test.append_list_of_buy_sells(array_of_batches,
                                                ticker + "slope_sum")
 
-            algorithm_return = sum(Back_Test.take_bid_stream_calculate_profit(
+            algorithm_profit = sum(Back_Test.take_bid_stream_calculate_profit(
                 ticker + "bid_stream", 18, 2))
+            print Back_Test.take_bid_stream_calculate_profit(
+                ticker + "bid_stream", 18, 2)
             log_return = sum(
                 Back_Test.test_calculate_holding_log_return(ticker + 'CLS'))
             holding_profit = Back_Test.calculate_holding_profit(
                 ticker + "CLS")
 
-            print "algorithm ", algorithm_return, '%'
+            print "algorithm ", algorithm_profit
             print "log return ", log_return, ' %'
-            print "percent change", percent_change, '%'
+            print "percent change", holding_profit,
 
-            f.write(ticker + ',' + str(algorithm_return) + ',' + str(log_return) +
+            f.write(ticker + ',' + str(algorithm_profit) + ',' + str(log_return) +
                     ',' + str(holding_profit) + '\n')
