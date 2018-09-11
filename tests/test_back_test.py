@@ -7,6 +7,7 @@ import get_tickers as get_tickers
 import back_test as back_test
 import pandas as pd
 import sample_slopes as sample_slopes
+import numpy as np
 
 
 def test_batcher():
@@ -342,7 +343,15 @@ def test_on_array_of_tickers_profit():
         main_df, "/Users/jasonbamford/workspace/stock_surface/models/model2018-09-03 14:27:40.165088.pkl")
 
     with open('return_output.csv', 'w') as f:
+        mean_array = []
+        std_array = []
+        returns_difference_array = []
         for ticker in tickers:
+
+            slope_sums = main_df[ticker + "slope_sum"]
+
+            mean = np.mean(main_df[ticker + "slope_sum"])
+            std = np.std(main_df[ticker + "slope_sum"])
 
             y_values = sample_slopes.generate_target_values(
                 main_df, 18, ticker + "CLS", 2)
@@ -369,5 +378,49 @@ def test_on_array_of_tickers_profit():
             print "log return ", log_return, ' %'
             print "percent change", holding_profit,
 
+            mean_array.append(mean)
+            std_array.append(std)
+            returns_difference_array.append(algorithm_profit - holding_profit)
+
             f.write(ticker + ',' + str(algorithm_profit) + ',' + str(log_return) +
-                    ',' + str(holding_profit) + '\n')
+                    ',' + str(holding_profit) + ',' + str(mean) + ',' + str(std) + '\n')
+
+        data = {
+            'mean': mean_array,
+            'std': std_array,
+            'returns_diff': returns_difference_array
+        }
+        meaningfull_stats = pd.DataFrame(data=data)
+
+        meaningfull_stats.to_pickle('files/meaningfull_stats.pkl')
+
+
+def test_different_lengths_of_objects():
+    """
+    This test is used to try out the returns calculator on the stock market data
+
+    """
+
+    ticker = 'FB'
+    main_df = pd.read_pickle('stock_data/df_without_zeros2010-2018.pkl')
+    main_df = sample_slopes.create_slope_sum(main_df)
+
+    Back_Test = back_test.BackTest(
+        main_df, "/Users/jasonbamford/workspace/stock_surface/models/model2018-09-03 14:27:40.165088.pkl")
+
+    y_values = sample_slopes.generate_target_values(
+        main_df, 18, ticker + "CLS", 2)
+
+    x_values = sample_slopes.create_batch_of_slopes(
+        main_df, ticker + 'CLS', 18,   y_values[1])
+
+    array_of_batches = Back_Test.create_batch_of_slopes(
+        main_df, ticker + 'slope_sum', 18, y_values[1])
+
+    print array_of_batches, ' here is lensss'
+
+    print Back_Test.append_list_of_buy_sells(array_of_batches,
+                                             ticker + "slope_sum")
+
+    print "algorithm dfa ", sum(Back_Test.take_bid_stream_calculate_profit(ticker + "bid_stream", 18, 2)), ' alogritmsss'
+    print "percent change", Back_Test.calculate_holding_profit(ticker + "CLS"),

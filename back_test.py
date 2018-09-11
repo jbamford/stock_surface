@@ -230,7 +230,7 @@ class BackTest():
             try:
                 bid = int(bid)
             except:
-                print "failsed heress"
+                print "it failed on NONE Value"
                 if holding == 1:
                     self.array_of_profits.append(
                         array_of_closes[index] - buy_price)
@@ -254,7 +254,7 @@ class BackTest():
                     sell_price = array_of_closes[
                         index + batch_size + look_ahead]
                 except:
-                    print "failsed herzzes"
+                    print "failsed trying to look ahead"
 
                     if holding == 1:
                         self.array_of_profits.append(
@@ -280,7 +280,7 @@ class BackTest():
                 holding = 0
 
             if bid == None:
-                print "the bid was  none"
+                print "the bid was none"
 
                 if holding == 1:
                     self.array_of_profits.append(

@@ -1,5 +1,5 @@
 import matplotlib as mpl
-from mpl_toolkits.mplot3d import Axes3D
+# from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 import time
 import matplotlib.pyplot as plt
@@ -31,17 +31,17 @@ start = dt.datetime(2012, 10, 1)
 end = dt.datetime(2018, 4, 14)
 mpl.rcParams['legend.fontsize'] = 10
 
-fig = plt.figure(figsize=(8, 8))
+# fig = plt.figure(figsize=(8, 8))
 
-ax = fig.gca(projection='3d')
+# ax = fig.gca(projection='3d')
 
-style.use('ggplot')
+# style.use('ggplot')
 
-delta = timedelta(days=1)
+# delta = timedelta(days=1)
 
-plot_df = pd.DataFrame()
+# plot_df = pd.DataFrame()
 
-df2 = pd.DataFrame()
+# df2 = pd.DataFrame()
 
 
 class Ticker_Data():
@@ -84,7 +84,7 @@ class Ticker_Data():
 
     def drop_row_with_NA(self):
         """
-        removes the rows with NA on teh self.dataframe
+        removes the rows with NA on the self.dataframe
         """
 
         # self.main_df = self.main_df[self.main_df[columns] != 0]

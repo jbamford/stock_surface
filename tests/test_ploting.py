@@ -57,6 +57,8 @@ def test_plot_stock():
 
     plt.plot(index, runningTotal, 'g')
 
+    plt.title(ticker + ' Profit')
+
     plt.plot(index_bid_stream, array_of_bid_stream, 'b')
 
     plt.show()
