@@ -9,18 +9,19 @@ import pandas as pd
 import sample_slopes as sample_slopes
 import matplotlib.pyplot as plt
 import numpy as np
+import settings
 
 
 def test_plot_stock():
     """
     Makes sure we can just plot a stock
     """
-    ticker = 'INTU'
-    main_df = pd.read_pickle('stock_data/df_without_zeros2010-2018.pkl')
+    ticker = 'GOOG'
+    main_df = pd.read_pickle(settings.settings_dict['stock_data_path'])
     main_df = sample_slopes.create_slope_sum(main_df)
 
     Back_Test = back_test.BackTest(
-        main_df, "/Users/jasonbamford/workspace/stock_surface/models/model2018-09-03 14:27:40.165088.pkl")
+        main_df, settings.settings_dict['model_path'])
 
     y_values = sample_slopes.generate_target_values(
         main_df, 18, ticker + 'CLS', 2)
@@ -61,6 +62,10 @@ def test_plot_stock():
 
     plt.plot(index_bid_stream, array_of_bid_stream, 'b')
 
+    print len(main_df[ticker + 'CLS'].tolist()), 'length of the close valeus'
+    print len(algorithm_return), 'algo proffits'
+    print len(runningTotal), 'runnign total'
+    print len(array_of_bid_stream), 'bid stream'
     plt.show()
 
     # TODO make sure that the running total account for weather or not we have a hold

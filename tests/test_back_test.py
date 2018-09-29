@@ -8,6 +8,7 @@ import back_test as back_test
 import pandas as pd
 import sample_slopes as sample_slopes
 import numpy as np
+import settings
 
 
 def test_batcher():
@@ -27,7 +28,7 @@ def test_batcher():
             }
     stock_data = pd.DataFrame(data=data)
     back_Test = back_test.BackTest(
-        stock_data, '/Users/jasonbamford/workspace/stock_surface/models/model_3_batch.pkl')
+        stock_data, settings.settings_dict['test_model_path'])
     assert len(back_Test.create_batch_of_slopes(
         stock_data, 'col4slope_sum', 2, 3)) == 3
     assert back_Test.create_batch_of_slopes(stock_data, 'col4slope_sum', 2, 3) == [
@@ -52,7 +53,7 @@ def test_generate_buy_sells():
     stock_data = pd.DataFrame(data=data)
 
     back_Test = back_test.BackTest(
-        stock_data, '/Users/jasonbamford/workspace/stock_surface/models/model_18_batch.pkl')
+        stock_data, settings.settings_dict['model_path'])
     assert back_Test.generate_buy_sells(
         [9, 3, 9, 3, 9, 3, -3, 3, 3, 3, 3, 3, 4, 5, 6, 1, 3, 4]) == 0
 
@@ -80,7 +81,7 @@ def test_append_list_of_buy_sells():
     # stock_data = pd.read_pickle('df_without_zeros.pkl')
 
     back_Test = back_test.BackTest(
-        stock_data, '/Users/jasonbamford/workspace/stock_surface/models/model_3_batch.pkl')
+        stock_data, settings.settings_dict['test_model_path'])
 
     array_of_batches = back_Test.create_batch_of_slopes(
         stock_data, 'col4slope_sum', 3, 9)
@@ -111,7 +112,7 @@ def test_log_return():
             }
     stock_data = pd.DataFrame(data=data)
     back_Test = back_test.BackTest(
-        stock_data, '/Users/jasonbamford/workspace/stock_surface/models/model_3_batch.pkl')
+        stock_data, settings.settings_dict['test_model_path'])
 
     assert back_Test.log_return(10, 5) == 0.6931471805599453
     assert back_Test.log_return(1.1, 1.0) == 0.09531017980432493
@@ -142,7 +143,7 @@ def test_take_bid_stream_calculate_return():
     # stock_data = pd.read_pickle('df_without_zeros.pkl')
 
     Back_Test = back_test.BackTest(
-        stock_data, '/Users/jasonbamford/workspace/stock_surface/models/model_3_batch.pkl')
+        stock_data, settings.settings_dict['test_model_path'])
 
     array_of_batches = Back_Test.create_batch_of_slopes(
         stock_data, 'col4slope_sum', 3, 9)
@@ -168,7 +169,7 @@ def test_take_bid_stream_calculate_return1():
     # stock_data = pd.read_pickle('df_without_zeros.pkl')
 
     Back_Test = back_test.BackTest(
-        stock_data, '/Users/jasonbamford/workspace/stock_surface/models/model_3_batch.pkl')
+        stock_data, settings.settings_dict['test_model_path'])
 
     array_of_batches = Back_Test.create_batch_of_slopes(
         stock_data, 'col4slope_sum', 3, 9)
@@ -190,7 +191,8 @@ def test_calculate_holding_percent_change_return():
     # stock_data = pd.read_pickle('df_without_zeros.pkl')
 
     Back_Test = back_test.BackTest(
-        stock_data, '/Users/jasonbamford/workspace/stock_surface/models/model_3_batch.pkl')
+        stock_data, settings.settings_dict['test_model_path'])
+
     assert Back_Test.calculate_holding_percent_change_return("col4CLS") == 1.1
 
 
@@ -200,11 +202,11 @@ def test_on_market_data_single_stock():
 
     """
 
-    main_df = pd.read_pickle('stock_data/df_without_zeros.pkl')
+    main_df = pd.read_pickle(settings.settings_dict['stock_data_path'])
     main_df = sample_slopes.create_slope_sum(main_df)
 
     Back_Test = back_test.BackTest(
-        main_df, '/Users/jasonbamford/workspace/stock_surface/models/model_18_batch.pkl')
+        main_df, settings.settings_dict['model_path'])
 
     y_values = sample_slopes.generate_target_values(
         main_df, 18, 'FBCLS', 2)
@@ -239,7 +241,7 @@ def test_calculate_holding_return():
     # stock_data = pd.read_pickle('df_without_zeros.pkl')
 
     Back_Test = back_test.BackTest(
-        stock_data, '/Users/jasonbamford/workspace/stock_surface/models/model_3_batch.pkl')
+        stock_data, settings.settings_dict['test_model_path'])
 
     print sum(Back_Test.test_calculate_holding_log_return('col4CLS'))
 
@@ -257,11 +259,11 @@ def test_on_array_of_market():
 
     # tickers = ["GOOG", "FB", "INTC", 'TSM', "CSCO"]
 
-    main_df = pd.read_pickle('stock_data/df_without_zeros.pkl')
+    main_df = pd.read_pickle(settings.settings_dict['stock_data_path'])
     main_df = sample_slopes.create_slope_sum(main_df)
 
     Back_Test = back_test.BackTest(
-        main_df, '/Users/jasonbamford/workspace/stock_surface/models/model_18_batch.pkl')
+        main_df, settings.settings_dict['model_path'])
 
     with open('return_output.csv', 'w') as f:
         for ticker in tickers:
@@ -292,6 +294,8 @@ def test_on_array_of_market():
             f.write(ticker + ',' + str(algorithm_return) + ',' + str(log_return) +
                     ',' + str(percent_change) + '\n')
 
+# +++++++++++============================================+++++++++++============================================
+
 
 def test_on_market_data_single_stock_profit():
     """
@@ -300,12 +304,11 @@ def test_on_market_data_single_stock_profit():
     """
 
     ticker = 'FB'
-    main_df = pd.read_pickle('stock_data/df_without_zeros.pkl')
+    main_df = pd.read_pickle(settings.settings_dict['stock_data_path'])
     main_df = sample_slopes.create_slope_sum(main_df)
 
     Back_Test = back_test.BackTest(
-        main_df, '/Users/jasonbamford/workspace/stock_surface/models/model_18_batch.pkl')
-
+        main_df, settings.settings_dict['model_path'])
     y_values = sample_slopes.generate_target_values(
         main_df, 18, ticker + "CLS", 2)
 
@@ -321,7 +324,7 @@ def test_on_market_data_single_stock_profit():
                                              ticker + "slope_sum")
 
     print "algorithm ", sum(Back_Test.take_bid_stream_calculate_profit(ticker + "bid_stream", 18, 2)),
-    print "percent change", Back_Test.calculate_holding_profit(ticker + "CLS"),
+    print "percent change", Back_Test.calculate_holding_profit(ticker + "CLS", 18, 2),
 
 
 def test_on_array_of_tickers_profit():
@@ -336,11 +339,11 @@ def test_on_array_of_tickers_profit():
 
     # tickers = ["GOOG", "FB", "INTC", 'TSM', "CSCO"]
 
-    main_df = pd.read_pickle('stock_data/df_without_zeros2010-2018.pkl')
+    main_df = pd.read_pickle(settings.settings_dict['stock_data_path'])
     main_df = sample_slopes.create_slope_sum(main_df)
 
     Back_Test = back_test.BackTest(
-        main_df, "/Users/jasonbamford/workspace/stock_surface/models/model2018-09-03 14:27:40.165088.pkl")
+        main_df, settings.settings_dict['model_path'])
 
     with open('return_output.csv', 'w') as f:
         mean_array = []
@@ -372,7 +375,7 @@ def test_on_array_of_tickers_profit():
             log_return = sum(
                 Back_Test.test_calculate_holding_log_return(ticker + 'CLS'))
             holding_profit = Back_Test.calculate_holding_profit(
-                ticker + "CLS")
+                ticker + "CLS", 18, 2)
 
             print "algorithm ", algorithm_profit
             print "log return ", log_return, ' %'
@@ -402,11 +405,12 @@ def test_different_lengths_of_objects():
     """
 
     ticker = 'FB'
-    main_df = pd.read_pickle('stock_data/df_without_zeros2010-2018.pkl')
+
+    main_df = pd.read_pickle(settings.settings_dict['stock_data_path'])
     main_df = sample_slopes.create_slope_sum(main_df)
 
     Back_Test = back_test.BackTest(
-        main_df, "/Users/jasonbamford/workspace/stock_surface/models/model2018-09-03 14:27:40.165088.pkl")
+        main_df, settings.settings_dict['model_path'])
 
     y_values = sample_slopes.generate_target_values(
         main_df, 18, ticker + "CLS", 2)
@@ -417,10 +421,10 @@ def test_different_lengths_of_objects():
     array_of_batches = Back_Test.create_batch_of_slopes(
         main_df, ticker + 'slope_sum', 18, y_values[1])
 
-    print array_of_batches, ' here is lensss'
+    print array_of_batches, ' here is len of array_of_batch'
 
     print Back_Test.append_list_of_buy_sells(array_of_batches,
                                              ticker + "slope_sum")
 
     print "algorithm dfa ", sum(Back_Test.take_bid_stream_calculate_profit(ticker + "bid_stream", 18, 2)), ' alogritmsss'
-    print "percent change", Back_Test.calculate_holding_profit(ticker + "CLS"),
+    print "percent change", Back_Test.calculate_holding_profit(ticker + "CLS", 18, 2),

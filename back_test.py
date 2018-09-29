@@ -67,19 +67,25 @@ class BackTest():
             # print should_buy_or_sell, ' should buy sell'
             array_of_buy_sells.append(int(should_buy_or_sell))
 
-        print array_of_buy_sells, ' here is buy sells'
-        print pd.Series(array_of_buy_sells), ' here is serreis of same '
-        print len(self.main_df), 'lenght of the datafram'
-        print len(array_of_buy_sells), ' len of the bid stream'
+        # print array_of_buy_sells, ' here is buy sells'
+        # print pd.Series(array_of_buy_sells), ' here is serreis of same '
+        # print len(self.main_df), 'lenght of the datafram'
+        # print len(array_of_buy_sells), ' len of the bid stream'
 
         # makes sure that the two arrays match each other when they are added
         # together
 
+        array_of_nones = []
         for i in range(len(self.main_df) - len(array_of_buy_sells)):
-            array_of_buy_sells.append(None)
+            array_of_nones.append(None)
+
+            # NOTE
+            # needed to add the nones to the begining of the buy_sell array since
+            # it starts caculating weatther or not to buy or sell a few days
+            # into the close values
 
         self.main_df[column_name.replace(
-            'slope_sum', 'bid_stream')] = array_of_buy_sells
+            'slope_sum', 'bid_stream')] = array_of_nones + array_of_buy_sells
 
         return self.main_df
 
@@ -121,11 +127,12 @@ class BackTest():
 
         return (float(array_of_closes[-1]) - float(array_of_closes[0])) / float(array_of_closes[0])
 
-    def calculate_holding_profit(self, column_with_close):
+    def calculate_holding_profit(self, column_with_close, batch_size, look_ahead):
         """
         Uses the common formula of percent change
         """
-        array_of_closes = self.main_df[column_with_close].tolist()
+        array_of_closes = self.main_df[column_with_close].tolist()[
+            :-(batch_size + look_ahead)]
 
         return float(array_of_closes[-1]) - float(array_of_closes[0])
 
@@ -134,12 +141,12 @@ class BackTest():
         This function take a column with a bid stream then reads the bid stream
         then looks at the corospoiding close prices and caculates our return
         """
-        array_of_bid_stream = self.main_df[column_bid_stream].tolist()
+        array_of_bid_stream = self.main_df[
+            column_bid_stream].tolist()
 
         array_of_closes = self.main_df[
             column_bid_stream.replace('bid_stream', "CLS")].tolist()
 
-        print array_of_closes, 'array of closes'
         index = 0
 
         buy_price = 0
@@ -211,7 +218,10 @@ class BackTest():
         This function take a column with a bid stream then reads the bid stream
         then looks at the corospoiding close prices and caculates our return
         """
-        array_of_bid_stream = self.main_df[column_bid_stream].tolist()
+        array_of_bid_stream = self.main_df[
+            column_bid_stream].tolist()[batch_size + look_ahead:]
+
+        print len(array_of_bid_stream), 'array of bid streams in the back_test.py'
 
         array_of_closes = self.main_df[
             column_bid_stream.replace('bid_stream', "CLS")].tolist()
@@ -246,7 +256,7 @@ class BackTest():
 
                 holding = 1
 
-            if bid == 0 and holding != 0:
+            elif bid == 0 and holding != 0:
                 # cannot happen the first time bec it starts at a 0
                 # this is when we should sell the stock after a bunch of 1's
 
@@ -267,19 +277,19 @@ class BackTest():
 
                 holding = 0
 
-            if bid == 1 and holding == 1:
+            elif bid == 1 and holding == 1:
                 # this is when the buy price was already set and we need to
                 # keep movin on
 
                 self.array_of_profits.append(0)
                 holding = 1
 
-            if bid == 0 and holding == 0:
+            elif bid == 0 and holding == 0:
 
                 self.array_of_profits.append(0)
                 holding = 0
 
-            if bid == None:
+            elif bid == None:
                 print "the bid was none"
 
                 if holding == 1:
@@ -287,7 +297,9 @@ class BackTest():
                         array_of_closes[index] - buy_price)
                 return self.array_of_profits
 
-            print "bid: {} - buy_price: {} - sell_price: {} - holding: {}".format(str(bid), str(buy_price), str(sell_price), str(holding))
+            # print "bid: {} - buy_price: {} - sell_price: {} - holding:
+            # {}".format(str(bid), str(buy_price), str(sell_price),
+            # str(holding))
 
             # TODO should return data frame not array
             index += 1
