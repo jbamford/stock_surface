@@ -5,7 +5,7 @@ import pandas as pd
 def create_slope_sum(df):
     """
     Takes a dataframe and looks at all the columns with perfecnt change. Then looks to the left and right
-    of each chnagne column and sums the left and right. 
+    of each chnagne column and sums the left and right.
 
     returns the oringal dataframe with the new columns called Slope_sum
     """
@@ -86,12 +86,13 @@ def generate_target_values(df, batch_count, column_name, look_ahead):
 
     i = 0
     target_values = []
-    while i < (len(list_of_closes) - (batch_count + look_ahead)):
+    while i < (len(list_of_closes) - look_ahead - 2):
+        print i, 'here is i'
 
-        target_day_index = i + batch_count + look_ahead
+        target_day_index = i + batch_count + look_ahead - 1
 
         percent_change = find_percent_change(
-            list_of_closes[target_day_index], list_of_closes[i])
+            list_of_closes[target_day_index], list_of_closes[i + batch_count - 1])
 
         if percent_change < 0:
             target_values.append(0)

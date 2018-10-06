@@ -246,6 +246,32 @@ def test_calculate_holding_return():
     print sum(Back_Test.test_calculate_holding_log_return('col4CLS'))
 
 
+def test_calculate_profit():
+    """
+    Makes sure that we can calculate the return if we just had held the stock
+    """
+    data = {
+        'col4CLS': [1, 1.2, 1.3, 1.7, 1.5, 1.2, 1.5, 1.6, 1.7, 1.8, 1.9, 2, 2.1, 2.4, 2.1, 2.6, 2.7, 2.1, 2.0, 1.6, 1.9, 1.2, 1.6, 2, 2.1],
+        'col4slope_sum': [1, 1.2, 1.3, 1.7, 1.5, 1.2, 1.5, 1.6, 1.7, 1.8, 1.9, 2, 2.1, 2.4, 2.2, 2.6, 2.7, 2.1, 2.0, 1.6, 1.9, 1.2, 1.6, 2, 2.1],
+        'col4bid_stream': [1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1]
+    }
+    stock_data = pd.DataFrame(data=data)
+    stock_data.to_csv('test-data.csv')
+
+    print len(data['col4CLS'])
+    print len(data['col4bid_stream'])
+
+    # stock_data = pd.read_pickle('df_without_zeros.pkl')
+
+    Back_Test = back_test.BackTest(
+        stock_data, settings.settings_dict['test_model_path'])
+
+    # def take_bid_stream_calculate_profit(self, column_bid_stream,
+    # batch_size, look_ahead, for_graph=False):
+
+    print sum(Back_Test.take_bid_stream_calculate_profit('col4bid_stream', 2, 2))
+
+
 def test_on_array_of_market():
     """
     This test is used to try out the returns calculator on the stock market data

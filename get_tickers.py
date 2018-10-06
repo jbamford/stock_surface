@@ -24,7 +24,7 @@ tickers = ["AAPL", "MSFT", "GOOG", "FB", "INTC", 'TSM',
            "CSCO", "ORCL", "NVDA", "SAP", "IBM", "ADBE",
            "TXN", "AVGO", "CRM", "QCOM", "MU", "BIDU",
            "ADP", "VMW", "ATVI", "AMAT", "INTU",
-           "CTSH", "EA", "NXPI", "INFY", "HPQ", "ADI", "NOK"]
+           "CTSH", "EA", "NXPI", "INFY", "ADI", "NOK"]
 
 
 start = dt.datetime(2012, 10, 1)
@@ -54,9 +54,9 @@ class Ticker_Data():
 
     def append_change_column(self, df, offset, ticker):
 
+        df2 = pd.DataFrame()
         # df2['change'] = df['Close'].pct_change(1, "pad", None, delta)
         df2['change'] = np.log(df['close']) - np.log(df['close'].shift(1))
-        plot_df[str(ticker)] = df2['change']
 
         self.main_df[str(ticker) + 'CHG'] = df2['change']
 
@@ -114,19 +114,23 @@ def main(batch_size, look_ahead):
 
     # remove the rows that contain any 0's or NA
 
+    ticker_data.main_df.to_csv('before_NA_drop_stock_data_slope_sumNoNA' +
+                               str(start) + '--' + str(end) + '.csv')
     # ticker_data.drop_row_with_zeros()
     ticker_data.drop_row_with_NA()
 
-    ticker_data.main_df.to_pickle('stock_data/df_without_zeros2010-2018.pkl')
+    ticker_data.main_df.to_pickle(
+        'stock_data/df_without_NA_' + str(start) + '--' + str(end) + '.pkl')
     # NOTE ============end================================================
 
     ticker_data.main_df = pd.read_pickle(
-        'stock_data/df_without_zeros2010-2018.pkl')
+        'stock_data/df_without_NA_' + str(start) + '--' + str(end) + '.pkl')
     # add the slope sum values to the dataframe
     ticker_data.main_df = sample_slopes.create_slope_sum(ticker_data.main_df)
 
     # write the whole datarame to a csv if you want to
-    ticker_data.main_df.to_csv('stock_data_slope_sumNoNA.csv')
+    ticker_data.main_df.to_csv(
+        'stock_data_slope_sumNoNA' + str(start) + '--' + str(end) + '.csv')
 
     # get the names of all the column titles
     columns = list(ticker_data.main_df)
@@ -187,4 +191,17 @@ def iterate_over_all_batch_and_look_ahead():
 if '__main__' == __name__:
 
     # sell, buy = main(18, 2)
-    main(18, 2)
+    # main(18, 2)
+
+    # start = dt.datetime(2012, 10, 1)
+    # end = dt.datetime(2018, 4, 14)
+    # ticker = 'HPQ'
+    # df = web.DataReader(ticker, 'iex', start, end)
+    # print df
+    i = 0
+    arr = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+    while i < (len(arr) - 2 - 1):
+        print i
+        i += 1
+    print arr[i], 'hree is '
+    print i

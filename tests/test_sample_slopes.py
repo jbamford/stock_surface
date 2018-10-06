@@ -119,9 +119,9 @@ def test_generate_target_values():
     stock_data = pd.DataFrame(data=data)
 
     assert sample_slopes.generate_target_values(
-        stock_data, 3, 'col2CLS', 2) == ([1, 0, 0, 0, 1], 5)
+        stock_data, 3, 'col2CLS', 2) == ([1, 1, 0, 0, 0, 1], 6)
     assert sample_slopes.generate_target_values(
-        stock_data, 3, 'col3CLS', 2) == ([0, 0, 1, 1, 1], 5)
+        stock_data, 3, 'col3CLS', 2) == ([1, 0, 1, 1, 1, 1], 6)
 
 
 def test_generate_target_values_and_sliding_window_lenth():

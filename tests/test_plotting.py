@@ -16,7 +16,7 @@ def test_plot_stock():
     """
     Makes sure we can just plot a stock
     """
-    ticker = 'GOOG'
+    ticker = 'INTU'
     main_df = pd.read_pickle(settings.settings_dict['stock_data_path'])
     main_df = sample_slopes.create_slope_sum(main_df)
 
@@ -66,6 +66,7 @@ def test_plot_stock():
     print len(algorithm_return), 'algo proffits'
     print len(runningTotal), 'runnign total'
     print len(array_of_bid_stream), 'bid stream'
+    print array_of_bid_stream
     plt.show()
 
     # TODO make sure that the running total account for weather or not we have a hold
