@@ -16,6 +16,9 @@ import pandas
 from sklearn.model_selection import TimeSeriesSplit
 from sklearn.externals import joblib
 from datetime import datetime
+from sklearn.tree import DecisionTreeClassifier
+import graphviz
+from sklearn import tree
 
 
 class Support_Vector():
@@ -31,6 +34,30 @@ class Support_Vector():
                                  'poly': {'degree': [2, 5], 'C': [0, 5], 'coef0': [0, 2]}
                                  }
                       }
+
+    def train_decision_tree(self):
+        """
+        uses the decsion tree method to try and figure out the binary classification problem
+
+        """
+        clf1 = DecisionTreeClassifier()
+
+        self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(
+            self.X, self.Y, test_size=0.2)
+
+        clf1.fit(self.X_train, self.y_train)
+
+        self.y_pred = clf1.predict(self.X_test)
+
+        confustion_matrix = confusion_matrix(self.y_test, self.y_pred)
+
+        print(classification_report(self.y_test, self.y_pred))
+
+        #======================================== make a pretty tree START=====
+        # dot_data = tree.export_graphviz(clf1, out_file=None)
+        # graph = graphviz.Source(dot_data)
+        # graph.render("stock_surface")
+        #======================================== make a pretty tree END=======
 
     def train(self, keep=False):
         """
@@ -65,7 +92,8 @@ class Support_Vector():
         # svclassifier = SVC(kernel='rbf',
         #                    C=4.696549, gamma=0.0302003)
 
-        svclassifier = SVC(kernel='rbf', probability=True)
+        svclassifier = SVC(
+            kernel='rbf', C=4.6, gamma=0.00031, probability=True)
 
         svclassifier.fit(self.X_train, self.y_train)
         self.y_pred = svclassifier.predict(self.X_test)

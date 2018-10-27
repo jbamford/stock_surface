@@ -113,26 +113,26 @@ def main(batch_size, look_ahead):
 
     # NOTE ============start here to get new stock data=======================
 
-    for ticker in tickers:
-        print ticker
-        time.sleep(.02)
-        # print ticker
-        df = web.DataReader(ticker, 'iex', start, end)
-        df = df.reset_index(level='date')
-        # print df.head()
-        ticker_data.append_change_column(df, i, ticker)
+    # for ticker in tickers:
+    #     print ticker
+    #     time.sleep(.02)
+    #     # print ticker
+    #     df = web.DataReader(ticker, 'iex', start, end)
+    #     df = df.reset_index(level='date')
+    #     # print df.head()
+    #     ticker_data.append_change_column(df, i, ticker)
 
-        i = i + 50
+    #     i = i + 50
 
-    # remove the rows that contain any 0's or NA
+    # # remove the rows that contain any 0's or NA
 
-    ticker_data.main_df.to_csv('before_NA_drop_stock_data_slope_sumNoNA' +
-                               str(start) + '--' + str(end) + '.csv')
-    # ticker_data.drop_row_with_zeros()
-    ticker_data.drop_row_with_NA()
+    # ticker_data.main_df.to_csv('before_NA_drop_stock_data_slope_sumNoNA' +
+    #                            str(start) + '--' + str(end) + '.csv')
+    # # ticker_data.drop_row_with_zeros()
+    # ticker_data.drop_row_with_NA()
 
-    ticker_data.main_df.to_pickle(
-        'stock_data/df_without_NA_' + str(start) + '--' + str(end) + '.pkl')
+    # ticker_data.main_df.to_pickle(
+    #     'stock_data/df_without_NA_' + str(start) + '--' + str(end) + '.pkl')
 
     # NOTE ============end================================================
 

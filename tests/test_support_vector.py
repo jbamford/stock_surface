@@ -27,3 +27,18 @@ def test_support_vector_on_datasets():
     sv.X = X
     sv.Y = y
     sv.train()
+
+
+def test_decision_tree():
+    """
+    makes sure can pass the decision tree example
+    """
+    iris = datasets.load_iris()
+    X = iris.data[:, [0, 2]]
+    y = iris.target
+
+    sv = support_vector.Support_Vector([], [])
+
+    sv.X = X
+    sv.Y = y
+    sv.train_decision_tree()
