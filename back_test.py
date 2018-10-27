@@ -174,7 +174,7 @@ class BackTest():
 
                 holding = 1
 
-            if bid == 0 and holding != 0:
+            if bid == -1 and holding != 0:
                 # cannot happen the first time bec it starts at a 0
                 # this is when we should sell the stock after a bunch of 1's
 
@@ -197,7 +197,7 @@ class BackTest():
                 self.array_of_returns.append(0)
                 holding = 1
 
-            if bid == 0 and holding == 0:
+            if bid == -1 and holding == 0:
 
                 self.array_of_returns.append(0)
                 holding = 0
@@ -221,7 +221,8 @@ class BackTest():
         array_of_bid_stream = self.main_df[
             column_bid_stream].tolist()[batch_size + look_ahead:]
 
-        print len(array_of_bid_stream), 'array of bid streams in the back_test.py'
+        # print len(array_of_bid_stream), 'array of bid streams in the
+        # back_test.py'
 
         array_of_closes = self.main_df[
             column_bid_stream.replace('bid_stream', "CLS")].tolist()
@@ -256,7 +257,7 @@ class BackTest():
 
                 holding = 1
 
-            elif bid == 0 and holding != 0:
+            elif bid == -1 and holding != 0:
                 # cannot happen the first time bec it starts at a 0
                 # this is when we should sell the stock after a bunch of 1's
 
@@ -284,7 +285,7 @@ class BackTest():
                 self.array_of_profits.append(0)
                 holding = 1
 
-            elif bid == 0 and holding == 0:
+            elif bid == -1 and holding == 0:
 
                 self.array_of_profits.append(0)
                 holding = 0

@@ -26,13 +26,13 @@ class Support_Vector():
     def __init__(self, X, Y):
         self.X = X
         self.Y = Y
-        self.space = space = {'kernel': {'linear': {'C': [0, 2]},
-                                         'rbf': {'logGamma': [-5, 0], 'C': [0, 10]},
-                                         'poly': {'degree': [2, 5], 'C': [0, 5], 'coef0': [0, 2]}
-                                         }
-                              }
+        self.space = {'kernel': {'linear': {'C': [0, 2]},
+                                 'rbf': {'logGamma': [-5, 0], 'C': [0, 10]},
+                                 'poly': {'degree': [2, 5], 'C': [0, 5], 'coef0': [0, 2]}
+                                 }
+                      }
 
-    def train(self):
+    def train(self, keep=False):
         """
         x and y are the featchures and the target values for the differnt pairs that we want the model to learn over
         """
@@ -56,8 +56,17 @@ class Support_Vector():
             self.X, self.Y, test_size=0.2)
 
         # svclassifier = SVC(kernel='rbf', gamma=0.47686340994)
-        svclassifier = SVC(kernel='rbf', gamma=0.30084722307,
-                           C=9.027665188437386)
+        # svclassifier = SVC(kernel='rbf', gamma=0.30084722307,
+        #                    C=9.027665188437386)
+
+        # svclassifier = SVC(kernel='rbf')
+
+        # second optomly time
+        # svclassifier = SVC(kernel='rbf',
+        #                    C=4.696549, gamma=0.0302003)
+
+        svclassifier = SVC(kernel='rbf', probability=True)
+
         svclassifier.fit(self.X_train, self.y_train)
         self.y_pred = svclassifier.predict(self.X_test)
 
@@ -68,8 +77,12 @@ class Support_Vector():
         # clf = SVC()
         # clf.fit(self.X_train, self.y_train)
         self.model = pickle.dumps(svclassifier)
-        joblib.dump(svclassifier, 'models/model' +
-                    str(datetime.now()) + '.pkl')
+
+        #  keeps making new modes
+
+        if keep:
+            joblib.dump(svclassifier, 'models/model' +
+                        str(datetime.now()) + '.pkl')
 
         return confustion_matrix[0]  # , confustion_matrix[1]
 

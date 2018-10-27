@@ -36,7 +36,7 @@ def test_train_on_test_data():
 
     sv = support_vector.Support_Vector(x_vaules, y_values[0])
     sv.train()
-    assert sv.predict_out_put([[-0.8, -1, 0]]) == [0]
+    assert sv.predict_out_put([[-0.8, -1, 0]]) == [-1]
     print "it was warnred "
 
 

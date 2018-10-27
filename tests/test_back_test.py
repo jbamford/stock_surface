@@ -55,7 +55,7 @@ def test_generate_buy_sells():
     back_Test = back_test.BackTest(
         stock_data, settings.settings_dict['model_path'])
     assert back_Test.generate_buy_sells(
-        [9, 3, 9, 3, 9, 3, -3, 3, 3, 3, 3, 3, 4, 5, 6, 1, 3, 4]) == 0
+        [9, 3, 9, 3, 9, 3, -3, 3, 3, 3, 3, 3, 4, 5, 6, 1, 3, 4]) == 1
 
 
 def test_append_list_of_buy_sells():

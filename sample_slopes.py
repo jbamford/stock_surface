@@ -86,8 +86,7 @@ def generate_target_values(df, batch_count, column_name, look_ahead):
 
     i = 0
     target_values = []
-    while i < (len(list_of_closes) - look_ahead - 2):
-        print i, 'here is i'
+    while i < (len(list_of_closes) - (look_ahead + batch_count) + 1):
 
         target_day_index = i + batch_count + look_ahead - 1
 
@@ -95,7 +94,7 @@ def generate_target_values(df, batch_count, column_name, look_ahead):
             list_of_closes[target_day_index], list_of_closes[i + batch_count - 1])
 
         if percent_change < 0:
-            target_values.append(0)
+            target_values.append(-1)
         else:
             target_values.append(1)
         i += 1

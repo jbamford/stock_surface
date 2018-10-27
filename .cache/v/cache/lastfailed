@@ -1,4 +1,6 @@
 {
   "tests/test_Back_test.py": true, 
+  "tests/test_back_test.py::test_generate_buy_sells": true, 
+  "tests/test_intigration.py::test_train_on_test_data": true, 
   "tests/test_sample_slopes.py::test_chunks": true
 }
