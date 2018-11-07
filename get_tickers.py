@@ -140,7 +140,10 @@ def main(batch_size, look_ahead):
         'stock_data/df_without_NA_' + str(start) + '--' + str(end) + '.pkl')
 
     # add the slope sum values to the dataframe
-    ticker_data.main_df = sample_slopes.create_slope_sum(ticker_data.main_df)
+    # ticker_data.main_df = sample_slopes.create_slope_sum(ticker_data.main_df)
+
+    ticker_data.main_df = sample_slopes.create_slope_sum_market(
+        ticker_data.main_df)
 
     # write the whole datarame to a csv if you want to
     ticker_data.main_df.to_csv(
@@ -166,8 +169,12 @@ def main(batch_size, look_ahead):
         # create_batch_of_slopes(df, batch_count, cut_length)
         # y_values[1] bec thats used to tell create batch_of_slopes where to
         # stop
+
         x_values = sample_slopes.create_batch_of_slopes(
             ticker_data.main_df, column, batch_size,   y_values[1])
+
+        # x_values = sample_slopes.create_batch_of_slopes_moving_av(
+        #     ticker_data.main_df, column, batch_size,   y_values[1], 15)
 
         # keeps adding new feature values to varable
         sv.X = sv.X + x_values

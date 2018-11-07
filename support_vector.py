@@ -92,8 +92,7 @@ class Support_Vector():
         # svclassifier = SVC(kernel='rbf',
         #                    C=4.696549, gamma=0.0302003)
 
-        svclassifier = SVC(
-            kernel='rbf', C=4.6, gamma=0.00031, probability=True)
+        svclassifier = SVC()
 
         svclassifier.fit(self.X_train, self.y_train)
         self.y_pred = svclassifier.predict(self.X_test)

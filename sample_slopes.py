@@ -34,6 +34,49 @@ def create_slope_sum(df):
     return df
 
 
+def create_slope_sum_market(df):
+    """
+    Takes a dataframe and looks at all the columns with perfecnt change. Then it compairs the stock of intreste and caculates
+    the differnce between it and the rest of the percent changes on that day in the market. Finally it sums them up.
+
+    returns the oringal dataframe with the new columns called Slope_sum
+    """
+
+    columns = df.columns
+
+    # filter the columns with CHG vs CLS
+    CLS_columns, CHG_columns = get_columns_with_CLS(columns)
+
+    # print CHG_columns, ' chagne columns'
+
+    column_index = 1
+
+    while column_index < len(CHG_columns) - 1:
+
+        # print CHG_columns[column_index], 'stock looking at'
+
+        stock_looking_at = CHG_columns[column_index]
+
+        # make dataframe of a bunch of zeros to the size of the df coming in
+        slope_sum = pd.DataFrame(np.zeros((len(df.index), 1)))
+        # print slope_sum, 'slpe sum int'
+
+        for stock in CHG_columns:
+
+            if stock != stock_looking_at:
+
+                slope_sum[0] = slope_sum[0] + \
+                    df[CHG_columns[column_index]] - df[stock]
+        # print slope_sum, ' new slope_sum'
+
+        # add the newly formed column containing the slope info to the main df
+        df[str(CHG_columns[column_index].replace('CHG', 'slope_sum'))] = slope_sum
+
+        column_index += 1
+    # print df
+    return df
+
+
 def get_columns_with_CLS(columns):
     """
     Takes an array of columns and returns the ones with CLS at the end
@@ -124,3 +167,26 @@ def create_batch_of_slopes(df, column_with_slope_sum, batch_count, cut_length):
         df[column_with_slope_sum].tolist(), batch_count))
 
     return list_of_chunks[:cut_length]
+
+
+def moving_average(a, n):
+    ret = np.cumsum(a, dtype=float)
+    ret[n:] = ret[n:] - ret[:-n]
+    return ret[n - 1:] / n
+
+
+def create_batch_of_slopes_moving_av(df, column_with_slope_sum, batch_count, cut_length, moving_window):
+    """
+    Takes a dataframe of closes changes and slopes and creates batches of the slopes of size batch_count
+    """
+
+    # take the dataframe makes it a list. Then only takes the front part of
+    # it and sends it to the sliding window to get the featchure chunks
+    list_of_chunks = list(_sliding_window(
+        df[column_with_slope_sum].tolist(), batch_count))
+
+    moving_av_chunks = []
+    for chunk in list_of_chunks:
+        moving_av_chunks.append(moving_average(chunk, moving_window))
+
+    return moving_av_chunks[:cut_length]

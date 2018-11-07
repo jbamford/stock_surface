@@ -221,25 +221,35 @@ class BackTest():
         array_of_bid_stream = self.main_df[
             column_bid_stream].tolist()[batch_size + look_ahead:]
 
+        print array_of_bid_stream , ' here is bid from fucntion'
         # print len(array_of_bid_stream), 'array of bid streams in the
         # back_test.py'
 
+    
         array_of_closes = self.main_df[
-            column_bid_stream.replace('bid_stream', "CLS")].tolist()
+            column_bid_stream.replace('bid_stream', "CLS")].tolist()[batch_size + look_ahead:]
 
         index = 0
-
         buy_price = 0
         sell_price = 0
         holding = 0
-
+        
+        appended_first_price = False
+        
         self.array_of_profits = []
-        if for_graph == True:
-            self.array_of_profits.append(array_of_closes[0])
+        if array_of_bid_stream[0] == 1:
+            if for_graph == True :
+                self.array_of_profits.append(array_of_closes[0])
+                appended_first_price = True
 
-        for bid in array_of_bid_stream:
+
+
+        while index < len(array_of_bid_stream):
+            # print bid , ' bid',  array_of_closes[index] , ' close', buy_price, ' buy price' ,sell_price , ' sell price' , 
             try:
-                bid = int(bid)
+                bid = int(array_of_bid_stream[index])
+                print "index {} | bid {} | holding {} | close {} | buy_price {} | sell_price {}".format(str(index), str(bid),str(holding),str(array_of_closes[index]),str(buy_price),str(sell_price))
+
             except:
                 print "it failed on NONE Value"
                 if holding == 1:
@@ -250,6 +260,10 @@ class BackTest():
             if bid == 1 and holding == 0:
                 # will only happen in the first case and after a 0
 
+                if not appended_first_price:
+                    if for_graph == True :
+                        self.array_of_profits.append(array_of_closes[index])
+
                 # set the price at the current index to the new buy_price
                 buy_price = array_of_closes[index]
 
@@ -257,32 +271,43 @@ class BackTest():
 
                 holding = 1
 
-            elif bid == -1 and holding != 0:
+            elif bid == -1 and holding == 1:
                 # cannot happen the first time bec it starts at a 0
                 # this is when we should sell the stock after a bunch of 1's
 
-                try:
-                    sell_price = array_of_closes[
-                        index + batch_size + look_ahead]
-                except:
-                    print "failsed trying to look ahead"
+                
+                sell_price = array_of_closes[
+                        index + look_ahead]
+                # except:
+                #     print "failsed trying to look ahead"
 
-                    if holding == 1:
-                        self.array_of_profits.append(
-                            array_of_closes[index] - buy_price)
+                    # if holding == 1:
+                    #     self.array_of_profits.append(
+                    #         array_of_closes[index] - buy_price)
 
-                    return self.array_of_profits
+                    # return self.array_of_profits
                 # now its time to sell out and calc return
 
-                self.array_of_profits.append(sell_price - buy_price)
 
+                #we dont want it to check the stock inbween the look ahead day and the day we got the sell signal 
+                # were just going to hold out and append 0 until we sell
+                self.array_of_profits.append(sell_price - buy_price)
+                # print 'gettign to the for statment'
+                for _ in range(look_ahead - 1):
+                    # print "it should add a 0"
+                    self.array_of_profits.append(0.000000001)
+                
+                # bump the index up by the look_ahead amount to start the next incoming bid to the correct day
+                index = index + look_ahead -1
                 holding = 0
+                buy_price = 0
+                sell_price = 0
 
             elif bid == 1 and holding == 1:
                 # this is when the buy price was already set and we need to
                 # keep movin on
 
-                self.array_of_profits.append(0)
+                self.array_of_profits.append(array_of_closes[index]-array_of_closes[index-1])
                 holding = 1
 
             elif bid == -1 and holding == 0:

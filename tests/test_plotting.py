@@ -12,13 +12,22 @@ import numpy as np
 import settings
 
 
+def helper_turn_data_into_csv(stock_close, algo_proffits, bid_stream):
+    """
+    Takes a few arrays puts them all into a data frame and then ports that to a CSV to look at in excel
+    """
+    data_frame_for_csv = pd.DataFrame(
+        {'stock_close': stock_close, 'algo_proffits': algo_proffits, 'bid_stream': bid_stream})
+    data_frame_for_csv.to_csv('files/close_proffit_bid.csv')
+
+
 def test_plot_stock():
     """
     Makes sure we can just plot a stock
     """
-    ticker = 'INTU'
+    ticker = 'GOOG'
     main_df = pd.read_pickle(settings.settings_dict['stock_data_path'])
-    main_df = sample_slopes.create_slope_sum(main_df)
+    main_df = sample_slopes.create_slope_sum_market(main_df)
 
     Back_Test = back_test.BackTest(
         main_df, settings.settings_dict['model_path'])
@@ -65,8 +74,12 @@ def test_plot_stock():
     print len(main_df[ticker + 'CLS'].tolist()), 'length of the close valeus'
     print len(algorithm_return), 'algo proffits'
     print len(runningTotal), 'runnign total'
-    print len(array_of_bid_stream), 'bid stream'
-    print array_of_bid_stream
+    print len(array_of_bid_stream), 'bid stream len'
+    print array_of_bid_stream[:50], 'bid stream'
+
+    helper_turn_data_into_csv(
+        main_df[ticker + 'CLS'].tolist()[:len(runningTotal)], runningTotal, array_of_bid_stream[:len(runningTotal)])
+
     plt.show()
 
     # TODO make sure that the running total account for weather or not we have a hold
