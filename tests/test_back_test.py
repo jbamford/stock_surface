@@ -288,7 +288,7 @@ def test_calculate_profit():
     for number in array_profit:
         rounded_profits.append(round(number,1))
 
-    assert rounded_profits == [0,0.3 ,0.6,0,0,0,0.1,0.1,0.3,0.8,0,0,0,-0.1,-0.4,0.3,-0.7,0.4,0.4,0.1]
+    assert rounded_profits == [0,0.3 ,0.1,0,0,0,0,0.1,0.3,-0.3,0,0,0,0, -0.4,0.3,-0.7,0.4,0.4,0.1]
 
 
 
@@ -519,3 +519,32 @@ def test_different_lengths_of_objects():
 
     print "algorithm dfa ", sum(Back_Test.take_bid_stream_calculate_profit(ticker + "bid_stream", 18, 2)), ' alogritmsss'
     print "percent change", Back_Test.calculate_holding_profit(ticker + "CLS", 18, 2),
+
+
+def test_heck_if_prior_days_have_a_buy_signal():
+    """
+    makes sure it can look backwards and pick out the 1 and the index
+    """
+    close = [1.2, 1.5, 1.6, 1.7, 1.8, 1.9, 2, 2.1, 2.4, 2.1, 2.6, 2.7, 2.1, 2.0, 1.6, 1.9, 1.2, 1.6, 2, 2.1]
+    bid_stream = [1 , 1, 0, 1, 0, 0, 1, 1, 1, -1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+
+    ticker = 'FB'
+
+    main_df = pd.read_pickle(settings.settings_dict['stock_data_path'])
+    main_df = sample_slopes.create_slope_sum(main_df)
+
+    Back_Test = back_test.BackTest(
+        main_df, settings.settings_dict['model_path'])
+
+    index = 5
+    is_there_a_one , close_value = Back_Test.check_if_prior_days_have_a_buy_signal(bid_stream,close,index)
+
+    while not is_there_a_one:
+        index = index -1 
+        is_there_a_one , close_value = Back_Test.check_if_prior_days_have_a_buy_signal(bid_stream,close,index)
+    
+    assert  [is_there_a_one , close_value] == [True, 1.7]
+
+
+
+

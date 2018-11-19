@@ -213,6 +213,31 @@ class BackTest():
 
         return self.array_of_returns
 
+    def check_if_prior_days_have_a_buy_signal(self, array_of_bid_stream, array_of_closes, index):
+        """
+        this function takes the bid and closes arrays with an index to check
+
+        it will return the close price if the index for the day in the bid stream is in fact a 1
+
+        """
+        bid = array_of_bid_stream[index]
+        if bid == 1:
+            return True, array_of_closes[index]
+        else:
+            return False, 0
+
+    def _validate_bid_stream_nones(self, bid_stream, batch_size, look_ahead):
+        """
+        This helper method is used to validate that the incoming bid stream has the first initial Nones equal to the batchsize + look ahead
+        returns True or False
+        """
+        print bid_stream, 'bid stream '
+        for value in bid_stream[:batch_size + look_ahead]:
+            print value
+            if str(value) != 'nan':
+                return False
+        return True
+
     def take_bid_stream_calculate_profit(self, column_bid_stream, batch_size, look_ahead, for_graph=False):
         """
         This function take a column with a bid stream then reads the bid stream
@@ -221,34 +246,37 @@ class BackTest():
         array_of_bid_stream = self.main_df[
             column_bid_stream].tolist()[batch_size + look_ahead:]
 
-        print array_of_bid_stream , ' here is bid from fucntion'
+        print array_of_bid_stream, ' here is bid from fucntion'
         # print len(array_of_bid_stream), 'array of bid streams in the
         # back_test.py'
 
-    
         array_of_closes = self.main_df[
             column_bid_stream.replace('bid_stream', "CLS")].tolist()[batch_size + look_ahead:]
+
+        # this is when the function got a bid stream that didnt start with the
+        # right amount of Nones for the offset
+        if not self._validate_bid_stream_nones(self.main_df[column_bid_stream].tolist(), batch_size, look_ahead):
+            return False
 
         index = 0
         buy_price = 0
         sell_price = 0
         holding = 0
-        
+
         appended_first_price = False
-        
+
         self.array_of_profits = []
         if array_of_bid_stream[0] == 1:
-            if for_graph == True :
+            if for_graph == True:
                 self.array_of_profits.append(array_of_closes[0])
                 appended_first_price = True
 
-
-
         while index < len(array_of_bid_stream):
-            # print bid , ' bid',  array_of_closes[index] , ' close', buy_price, ' buy price' ,sell_price , ' sell price' , 
+            # print bid , ' bid',  array_of_closes[index] , ' close',
+            # buy_price, ' buy price' ,sell_price , ' sell price' ,
             try:
                 bid = int(array_of_bid_stream[index])
-                print "index {} | bid {} | holding {} | close {} | buy_price {} | sell_price {}".format(str(index), str(bid),str(holding),str(array_of_closes[index]),str(buy_price),str(sell_price))
+                print "index {} | bid {} | holding {} | close {} | buy_price {} | sell_price {}".format(str(index), str(bid), str(holding), str(array_of_closes[index]), str(buy_price), str(sell_price))
 
             except:
                 print "it failed on NONE Value"
@@ -261,7 +289,7 @@ class BackTest():
                 # will only happen in the first case and after a 0
 
                 if not appended_first_price:
-                    if for_graph == True :
+                    if for_graph == True:
                         self.array_of_profits.append(array_of_closes[index])
 
                 # set the price at the current index to the new buy_price
@@ -275,30 +303,40 @@ class BackTest():
                 # cannot happen the first time bec it starts at a 0
                 # this is when we should sell the stock after a bunch of 1's
 
-                
+                is_there_a_one, close_value = self.check_if_prior_days_have_a_buy_signal(
+                    array_of_bid_stream, array_of_closes, index - 1)
+
+                while not is_there_a_one:
+                    index = index - 1
+                    is_there_a_one, close_value = self.check_if_prior_days_have_a_buy_signal(
+                        array_of_bid_stream, array_of_closes, index)
+
+                buy_price = close_value
+
                 sell_price = array_of_closes[
-                        index + look_ahead]
+                    index]
                 # except:
                 #     print "failsed trying to look ahead"
 
-                    # if holding == 1:
-                    #     self.array_of_profits.append(
-                    #         array_of_closes[index] - buy_price)
+                # if holding == 1:
+                #     self.array_of_profits.append(
+                #         array_of_closes[index] - buy_price)
 
-                    # return self.array_of_profits
+                # return self.array_of_profits
                 # now its time to sell out and calc return
 
-
-                #we dont want it to check the stock inbween the look ahead day and the day we got the sell signal 
+                # we dont want it to check the stock inbween the look ahead day and the day we got the sell signal
                 # were just going to hold out and append 0 until we sell
+                print 'jason here si the sell price', sell_price
                 self.array_of_profits.append(sell_price - buy_price)
                 # print 'gettign to the for statment'
                 for _ in range(look_ahead - 1):
                     # print "it should add a 0"
                     self.array_of_profits.append(0.000000001)
-                
-                # bump the index up by the look_ahead amount to start the next incoming bid to the correct day
-                index = index + look_ahead -1
+
+                # bump the index up by the look_ahead amount to start the next
+                # incoming bid to the correct day
+                index = index + look_ahead - 1
                 holding = 0
                 buy_price = 0
                 sell_price = 0
@@ -307,13 +345,30 @@ class BackTest():
                 # this is when the buy price was already set and we need to
                 # keep movin on
 
-                self.array_of_profits.append(array_of_closes[index]-array_of_closes[index-1])
+                self.array_of_profits.append(
+                    array_of_closes[index] - array_of_closes[index - 1])
+
+                # if caculating the proffit over time it shouldn't keep adding
+                # priovious day
+
                 holding = 1
 
             elif bid == -1 and holding == 0:
+                # shift up the index bec we dont want to buy anything if we
+                # know the stock will go down in the amount of look_ahead days
+                # if index < len(array_of_bid_stream) - (look_ahead):
+                print "index was less"
+                index = index + look_ahead - 1
 
                 self.array_of_profits.append(0)
+
+                for _ in range(look_ahead - 1):
+                        # print "it should add a 0"
+                    self.array_of_profits.append(0.000000001)
                 holding = 0
+                # else:
+                #     print "index was more"
+                #     return self.array_of_profits
 
             elif bid == None:
                 print "the bid was none"

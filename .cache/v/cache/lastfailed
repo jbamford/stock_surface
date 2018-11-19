@@ -1,5 +1,4 @@
 {
   "tests/test_Back_test.py": true, 
-  "tests/test_bid_streams.py::test_calculate_profit_one_zero": true, 
   "tests/test_sample_slopes.py::test_chunks": true
 }
