@@ -307,7 +307,7 @@ def test_calculate_profit():
 
     stock_data['profit'] = array_of_nones + array_profit
 
-    stock_data.to_csv('test-data.csv')
+    stock_data.to_csv('files/testing_files/test-data.csv')
 
     # needed to round the answers bec python and floats 
     rounded_profits = []
@@ -353,7 +353,7 @@ def test_calculate_profit_all_ones():
 
     stock_data['profit'] = array_of_nones + array_profit
 
-    stock_data.to_csv('test-data.csv')
+    stock_data.to_csv('files/testing_files/test-data.csv')
 
     # needed to round the answers bec python and floats 
     rounded_profits = []
@@ -382,7 +382,7 @@ def test_on_array_of_market():
     Back_Test = back_test.BackTest(
         main_df, settings.settings_dict['model_path'])
 
-    with open('return_output.csv', 'w') as f:
+    with open('files/testing_files/return_output.csv', 'w') as f:
         for ticker in tickers:
 
             y_values = sample_slopes.generate_target_values(
@@ -462,7 +462,7 @@ def test_on_array_of_tickers_profit():
     Back_Test = back_test.BackTest(
         main_df, settings.settings_dict['model_path'])
 
-    with open('return_output.csv', 'w') as f:
+    with open('files/testing_files/return_output.csv', 'w') as f:
         mean_array = []
         std_array = []
         returns_difference_array = []

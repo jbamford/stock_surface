@@ -95,7 +95,7 @@ def write_feature_and_targets(X, Y):
     """
     Takes the X and Y and writest them to a file
     """
-    with open('all_feature.txt', 'w') as file_name:
+    with open('files/testing_files/all_feature.txt', 'w') as file_name:
         for feature in X:
             file_name.write(str(feature) + ',' + '\n')
         for target in Y:
@@ -203,7 +203,7 @@ def iterate_over_all_batch_and_look_ahead():
 
             sell, buy = main(i, j)
 
-            with open('hold_percents.txt', 'a')as f:
+            with open('files/testing_files/hold_percents.txt', 'a')as f:
                 f.write(str(float(sell[0]) / float((sell[1] + sell[0]))) + ',' +
                         str(float(buy[1]) / float(buy[1] + buy[0])) +
                         ', ' + str(i) + ',' + str(j) + '\n')

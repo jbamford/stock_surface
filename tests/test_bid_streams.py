@@ -44,7 +44,7 @@ def test_calculate_profit():
 
     stock_data['profit'] = array_of_nones + array_profit
 
-    stock_data.to_csv('test-data.csv')
+    stock_data.to_csv('files/testing_files/test-data.csv')
 
     # needed to round the answers bec python and floats 
     rounded_profits = []
@@ -89,7 +89,7 @@ def test_calculate_profit_all_ones():
 
     stock_data['profit'] = array_of_nones + array_profit
 
-    stock_data.to_csv('test-data.csv')
+    stock_data.to_csv('files/testing_files/test-data.csv')
 
     # needed to round the answers bec python and floats 
     rounded_profits = []
@@ -134,7 +134,7 @@ def test_calculate_profit_all_zeros():
 
     stock_data['profit'] = array_of_nones + array_profit
 
-    stock_data.to_csv('test-data.csv')
+    stock_data.to_csv('files/testing_files/test-data.csv')
 
     # needed to round the answers bec python and floats 
     rounded_profits = []
@@ -178,7 +178,7 @@ def test_calculate_profit_one_zero():
 
     stock_data['profit'] = array_of_nones + array_profit
 
-    stock_data.to_csv('test-data.csv')
+    stock_data.to_csv('files/testing_files/test-data.csv')
 
     # needed to round the answers bec python and floats 
     rounded_profits = []
@@ -223,7 +223,7 @@ def test_calculate_profit_two_consecutive_zero():
 
     stock_data['profit'] = array_of_nones + array_profit
 
-    stock_data.to_csv('test-data.csv')
+    stock_data.to_csv('files/testing_files/test-data.csv')
 
     # needed to round the answers bec python and floats 
     rounded_profits = []
@@ -268,7 +268,7 @@ def test_calculate_profit_long():
 
     stock_data['profit'] = array_of_nones + array_profit
 
-    stock_data.to_csv('test-data.csv')
+    stock_data.to_csv('files/testing_files/test-data.csv')
 
     # needed to round the answers bec python and floats 
     rounded_profits = []
