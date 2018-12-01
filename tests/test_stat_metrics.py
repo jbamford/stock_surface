@@ -16,6 +16,7 @@ import math
 import seaborn
 from statsmodels.stats.stattools import jarque_bera
 from statsmodels import regression, stats
+import settings
 
 
 def linreg(X, Y):
@@ -48,7 +49,8 @@ def test_variance_of_slope_sums():
     """
 
     ticker = 'GOOG'
-    main_df = pd.read_pickle('stock_data/df_without_zeros2010-2018.pkl')
+    main_df = pd.read_pickle(settings.settings_dict['stock_data_path'])
+
     main_df = sample_slopes.create_slope_sum(main_df)
 
     slope_sums = main_df[ticker + "slope_sum"]
@@ -75,7 +77,7 @@ def test_slope_sum_stock_price():
     """
 
     ticker = 'FB'
-    main_df = pd.read_pickle('stock_data/df_without_zeros2010-2018.pkl')
+    main_df = pd.read_pickle(settings.settings_dict['stock_data_path'])
     main_df = sample_slopes.create_slope_sum(main_df)
 
     slope_sums = main_df[ticker + "slope_sum"]
@@ -86,7 +88,7 @@ def test_slope_sum_stock_price():
     # test for normality
     assert jarque_bera(main_df[ticker + "slope_sum"])[1] < .005
 
-    std = pd.rolling_std(slope_sums, window=20)
+    # std = pd.rolling_std(slope_sums, window=20)
 
     plt.figure(1)
 

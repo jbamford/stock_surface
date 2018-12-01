@@ -27,7 +27,7 @@ def test_plot_stock():
     """
     batch_size = 18
     look_ahead = 2
-    ticker = 'GOOG'
+    ticker = 'IBM'
     main_df = pd.read_pickle(settings.settings_dict['stock_data_path'])
     main_df = sample_slopes.create_slope_sum_market(main_df)
 
@@ -47,9 +47,10 @@ def test_plot_stock():
                                        ticker + "slope_sum")
 
     algorithm_return = Back_Test.take_bid_stream_calculate_profit(
-        ticker + "bid_stream", batch_size, look_ahead, for_graph=False)
+        ticker + "bid_stream", batch_size, look_ahead, for_graph=True)
 
-    array_of_bid_stream = Back_Test.main_df[ticker + 'bid_stream'].tolist()
+    array_of_bid_stream = Back_Test.main_df[
+        ticker + 'bid_stream'].tolist()[batch_size + look_ahead - 1:]
     index_bid_stream = range(0, len(array_of_bid_stream))
 
     array_of_bid_stream = np.array(array_of_bid_stream) * 5

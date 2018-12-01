@@ -56,7 +56,33 @@ def test_generate_buy_sells():
         stock_data, settings.settings_dict['model_path'])
     assert back_Test.generate_buy_sells(
         [9, 3, 9, 3, 9, 3, -3, 3, 3, 3, 3, 3, 4, 5, 6, 1, 3, 4]) == 1
+def test_caculate_holing_proffit():
+    """
+    used to make sure that the holding proffict if correct
+    """
+    data = {'col1CLS': [3, 3, 4, 5, 7, 5, 7, 6, 5, 11],
+            'col2CLS': [6, 5, 5, 6, 7, 6, 4, 3, 3, 8],
+            'col3CLS': [7, 6, 4, 6, 4, 2, 4, 5, 6, 5],
+            'col4CLS': [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            'col5CLS': [3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
+            'col1CHG': [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            'col2CHG': [4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
+            'col3CHG': [4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
+            'col4CHG': [4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
+            'col5CHG': [3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
+            'col2slope_sum': [13, 8, -3, 3, 3, 3, 3, 3, 3, 3],
+            'col3slope_sum': [1, -3, 3, 5, 3, 3, 3, 3, 3, 3],
+            'col4slope_sum': [9, 3, 9, 3, -3, 3, 3, 3, 3, 3],
+            }
+    stock_data = pd.DataFrame(data=data)
 
+    back_Test = back_test.BackTest(
+        stock_data, settings.settings_dict['model_path'])
+    
+    profit = back_Test.calculate_holding_profit('col1CLS',3,2)
+    
+    print profit
+    assert profit == 6
 
 def test_append_list_of_buy_sells():
     """
@@ -394,7 +420,7 @@ def test_on_market_data_single_stock_profit():
 
     """
 
-    ticker = 'FB'
+    ticker = 'BIDU'
     main_df = pd.read_pickle(settings.settings_dict['stock_data_path'])
     main_df = sample_slopes.create_slope_sum(main_df)
 
@@ -521,7 +547,7 @@ def test_different_lengths_of_objects():
     print "percent change", Back_Test.calculate_holding_profit(ticker + "CLS", 18, 2),
 
 
-def test_heck_if_prior_days_have_a_buy_signal():
+def test_check_if_prior_days_have_a_buy_signal():
     """
     makes sure it can look backwards and pick out the 1 and the index
     """

@@ -84,6 +84,10 @@ class BackTest():
             # it starts caculating weatther or not to buy or sell a few days
             # into the close values
 
+        # remove the last bid
+        del array_of_buy_sells[-1]
+        array_of_nones.append(None)
+
         self.main_df[column_name.replace(
             'slope_sum', 'bid_stream')] = array_of_nones + array_of_buy_sells
 
@@ -131,8 +135,10 @@ class BackTest():
         """
         Uses the common formula of percent change
         """
+        # need to shift the column in order to not count hte first few days bec there wasnt any data to make
+        # a buy or sell claim
         array_of_closes = self.main_df[column_with_close].tolist()[
-            :-(batch_size + look_ahead)]
+            (batch_size + look_ahead):]
 
         return float(array_of_closes[-1]) - float(array_of_closes[0])
 
