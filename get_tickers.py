@@ -52,18 +52,15 @@ class Ticker_Data():
     def __init__(self, df):
         self.main_df = df
 
-    def append_change_column(self, df, offset, ticker):
-
+    def append_change_column(self, df, ticker):
+        """
+         take the dataframe that holds the stock info and the ticker of interest 
+         then append the new change column and the new close column to the main dataframe
+        """
         df2 = pd.DataFrame()
-        # df2['change'] = df['Close'].pct_change(1, "pad", None, delta)
         df2['change'] = np.log(df['close']) - np.log(df['close'].shift(1))
-
         self.main_df[str(ticker) + 'CHG'] = df2['change']
-
         self.main_df[str(ticker) + 'CLS'] = df['close']
-
-        # print self.main_df
-
         return self.main_df
 
     def backTester(self, df):
@@ -120,7 +117,7 @@ def main(batch_size, look_ahead):
     #     df = web.DataReader(ticker, 'iex', start, end)
     #     df = df.reset_index(level='date')
     #     # print df.head()
-    #     ticker_data.append_change_column(df, i, ticker)
+    #     ticker_data.append_change_column(df, ticker)
 
     #     i = i + 50
 

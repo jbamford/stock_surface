@@ -53,13 +53,10 @@ def create_slope_sum_market(df):
 
     while column_index < len(CHG_columns) - 1:
 
-        # print CHG_columns[column_index], 'stock looking at'
-
         stock_looking_at = CHG_columns[column_index]
 
         # make dataframe of a bunch of zeros to the size of the df coming in
         slope_sum = pd.DataFrame(np.zeros((len(df.index), 1)))
-        # print slope_sum, 'slpe sum int'
 
         for stock in CHG_columns:
 
@@ -67,7 +64,6 @@ def create_slope_sum_market(df):
 
                 slope_sum[0] = slope_sum[0] + \
                     df[CHG_columns[column_index]] - df[stock]
-        # print slope_sum, ' new slope_sum'
 
         # add the newly formed column containing the slope info to the main df
         df[str(CHG_columns[column_index].replace('CHG', 'slope_sum'))] = slope_sum

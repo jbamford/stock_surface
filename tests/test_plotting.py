@@ -27,7 +27,7 @@ def test_plot_stock():
     """
     batch_size = 18
     look_ahead = 2
-    ticker = 'IBM'
+    ticker = 'ADBE'
     main_df = pd.read_pickle(settings.settings_dict['stock_data_path'])
     main_df = sample_slopes.create_slope_sum_market(main_df)
 
@@ -70,13 +70,13 @@ def test_plot_stock():
         0, len(main_df[ticker + 'CLS'].tolist()[batch_size + look_ahead - 1:]))
 
     plt.plot(index_stock, main_df[
-             ticker + 'CLS'].tolist()[batch_size + look_ahead - 1:], 'r')
+             ticker + 'CLS'].tolist()[batch_size + look_ahead - 1:], 'r', label=ticker + ' Close')
 
-    plt.plot(index, runningTotal, 'g')
+    plt.plot(index, runningTotal, 'g', label='Algorithm Profits')
 
     plt.title(ticker + ' Profit')
 
-    plt.plot(index_bid_stream, array_of_bid_stream, 'b')
+    plt.plot(index_bid_stream, array_of_bid_stream, 'b', label='Bid Stream')
 
     print len(main_df[ticker + 'CLS'].tolist()), 'length of the close valeus'
     print len(algorithm_return), 'algo proffits'
@@ -87,6 +87,7 @@ def test_plot_stock():
     helper_turn_data_into_csv(
         main_df[ticker + 'CLS'].tolist()[:len(runningTotal)], runningTotal, array_of_bid_stream[:len(runningTotal)])
 
+    plt.legend(loc='best')
     plt.show()
 
     # TODO make sure that the running total account for weather or not we have a hold

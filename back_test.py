@@ -52,7 +52,7 @@ class BackTest():
 
     def generate_buy_sells(self, batch):
         """
-        This function takes batches of slope sums and applys that to the model it returns 1 or 0
+        This function takes batches of slope sums and applies that to the model it returns 1 or -1
         """
         return self.model.predict([batch])
 
@@ -67,13 +67,6 @@ class BackTest():
             # print should_buy_or_sell, ' should buy sell'
             array_of_buy_sells.append(int(should_buy_or_sell))
 
-        # print array_of_buy_sells, ' here is buy sells'
-        # print pd.Series(array_of_buy_sells), ' here is serreis of same '
-        # print len(self.main_df), 'lenght of the datafram'
-        # print len(array_of_buy_sells), ' len of the bid stream'
-
-        # makes sure that the two arrays match each other when they are added
-        # together
 
         array_of_nones = []
         for i in range(len(self.main_df) - len(array_of_buy_sells)):
@@ -81,7 +74,7 @@ class BackTest():
 
             # NOTE
             # needed to add the nones to the begining of the buy_sell array since
-            # it starts caculating weatther or not to buy or sell a few days
+            # it starts calculating whether or not to buy or sell a few days
             # into the close values
 
         # remove the last bid

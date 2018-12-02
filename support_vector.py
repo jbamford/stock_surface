@@ -64,37 +64,13 @@ class Support_Vector():
         x and y are the featchures and the target values for the differnt pairs that we want the model to learn over
         """
 
-        # splits = TimeSeriesSplit(n_splits=3)
-        # index = 1
-        # for train_index, test_index in splits.split(self.X):
-        #     train = self.X[train_index]
-        #     test = self.X[test_index]
-        #     print('Observations: %d' % (len(train) + len(test)))
-        #     print('Training Observations: %d' % (len(train)))
-        #     print('Testing Observations: %d' % (len(test)))
-        #     index += 1
-
-        # for train_index, test_index in tscv.split(self.X):
-        #     print("TRAIN:", train_index, "TEST:", test_index)
-        #     self.X_train, self.X_test = self.X[train_index], self.X[test_index]
-        #     self.y_train, self.y_test = self.Y[train_index], self.Y[test_index]
-
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(
             self.X, self.Y, test_size=0.2)
-
-        # svclassifier = SVC(kernel='rbf', gamma=0.47686340994)
-        # svclassifier = SVC(kernel='rbf', gamma=0.30084722307,
-        #                    C=9.027665188437386)
-
-        # svclassifier = SVC(kernel='rbf')
-
-        # second optomly time
-        # svclassifier = SVC(kernel='rbf',
-        #                    C=4.696549, gamma=0.0302003)
 
         svclassifier = SVC()
 
         svclassifier.fit(self.X_train, self.y_train)
+
         self.y_pred = svclassifier.predict(self.X_test)
 
         confustion_matrix = confusion_matrix(self.y_test, self.y_pred)
