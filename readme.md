@@ -10,6 +10,29 @@ This module was motivated by a [unique feature](https://medium.com/p/d54b7666cc7
 git clone [repository]
 ```
 
+## Running Code 
+```bash
+cd stock_surface
+
+#install dependencies 
+pip install -r /path/to/requirements.txt
+
+#runing tests
+pytest tests/
+
+#get stock data and train a new model
+python get_tickers.py
+
+#look at how well model did for individual stock
+pytest tests/test_plotting.py::test_plot_stock 
+
+#check returns for whole portfolio 
+pytest tests/test_backtest.py::test_on_array_of_tickers_profit
+
+#open the csv file 
+vi files/testing_files/return_output.csv
+```
+
 ## Useful Files
 
 __get_tickers.py__
@@ -40,28 +63,6 @@ __tests/test_back_test.py__
 These functions are used to test how well your model did on the market data most notably: test_on_array_of_tickers_profit() 
 
 This will output a CSV file that you can compare how each stock did to just holding it. 
-## Running Code 
-```bash
-cd stock_surface
-
-#install dependencies 
-pip install -r /path/to/requirements.txt
-
-#runing tests
-pytest tests/
-
-#get stock data and train a new model
-python get_tickers.py
-
-#look at how well model did for individual stock
-pytest tests/test_plotting.py::test_plot_stock 
-
-#check returns for whole portfolio 
-pytest tests/test_backtest.py::test_on_array_of_tickers_profit
-
-#open the csv file 
-vi files/testing_files/return_output.csv
-```
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
