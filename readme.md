@@ -37,7 +37,7 @@ vi files/testing_files/return_output.csv
 
 __get_tickers.py__
 
-This is the main function that pulls the stock data manipulates the feature set and trains the model. 
+This file holds the main function that pulls the stock data, manipulates the feature set, and trains the model. 
 
 __sample_slopes.py__
 
@@ -45,7 +45,7 @@ This file holds the functions to perform the feature and target value manipulati
 
 __settings.py__
 
-Holds the settings for the backtesting
+Holds the settings for the back testing
 
 __support_vector.py___
 
