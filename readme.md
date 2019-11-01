@@ -7,14 +7,14 @@ This module was motivated by a [unique feature](https://medium.com/p/d54b7666cc7
 
 
 ```bash
-git clone [repository]
+git clone [repository] 
 ```
 
 ## Running Code 
 ```bash
 cd stock_surface
 
-#install dependencies 
+#install the dependencies 
 pip install -r /path/to/requirements.txt
 
 #runing tests
