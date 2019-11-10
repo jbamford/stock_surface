@@ -1,3 +1,4 @@
+import os
 import matplotlib as mpl
 # from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
@@ -109,28 +110,34 @@ def main(batch_size, look_ahead):
     ticker_data = Ticker_Data(main_df)
 
     # NOTE ============start here to get new stock data=======================
+    # sign up for free account https://iexcloud.io/console
+    os.environ["IEX_API_KEY"] = "pk_f8f18988794d4d6f99aae809cdb3fc29"
 
-    # for ticker in tickers:
-    #     print ticker
-    #     time.sleep(.02)
-    #     # print ticker
-    #     df = web.DataReader(ticker, 'iex', start, end)
-    #     df = df.reset_index(level='date')
-    #     # print df.head()
-    #     ticker_data.append_change_column(df, ticker)
+    for ticker in tickers:
+        print ticker
+        time.sleep(.02)
+        # print ticker
+        df = web.DataReader(ticker, 'iex', start, end)
+        df = df.reset_index(level='date')
+        # print df.head()
+        ticker_data.append_change_column(df, ticker)
 
-    #     i = i + 50
+        i = i + 50
 
-    # # remove the rows that contain any 0's or NA
+    # remove the rows that contain any 0's or NA
 
-    # ticker_data.main_df.to_csv('before_NA_drop_stock_data_slope_sumNoNA' +
-    #                            str(start) + '--' + str(end) + '.csv')
-    # # ticker_data.drop_row_with_zeros()
-    # ticker_data.drop_row_with_NA()
+    ticker_data.main_df.to_csv('before_NA_drop_stock_data_slope_sumNoNA' +
+                               str(start) + '--' + str(end) + '.csv')
+    # ticker_data.drop_row_with_zeros()
+    ticker_data.drop_row_with_NA()
 
-    # ticker_data.main_df.to_pickle(
-    #     'stock_data/df_without_NA_' + str(start) + '--' + str(end) + '.pkl')
+    ticker_data.main_df.to_pickle(
+        'stock_data/df_without_NA_' + str(start) + '--' + str(end) + '.pkl')
 
+    print ticker_data
+
+    print "done"
+    time.sleep(10)
     # NOTE ============end================================================
 
     ticker_data.main_df = pd.read_pickle(
@@ -209,6 +216,7 @@ def iterate_over_all_batch_and_look_ahead():
 if '__main__' == __name__:
 
     # sell, buy = main(18, 2)
+
     main(18, 2)
 
     # start = dt.datetime(2012, 10, 1)
