@@ -8,4 +8,4 @@ statsmodels==0.9.0
 pytest==3.3.2
 Optunity==1.1.1
 seaborn==0.9.0
-scikit_learn==0.20.1
+scikit_learn==1.5.0
